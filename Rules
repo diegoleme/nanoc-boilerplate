@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby
+
+### Preprocessing ############################################################
+
+preprocess do
+  config[:nanoc_version_info] = 'nanoc --version'.strip
+  config[:gem_version_info]   = 'gem --version'.strip
+
+  if config[:frontend_framework] == 'foundation'
+    require 'compass'
+    Compass.add_project_configuration 'compass_config.rb'
+  end
+end
+
+### Routing ##################################################################
+
+route '/static/*' do
+  item.identifier[7..-2] # /static/foo.html/ → /foo.html
+end
+
+route '/css/*' do
+  unless item.identifier.split('/').last.start_with?('_')
+    regex = Regexp.new('/css/'+config[:frontend_framework]+'/')
+    if (regex =~ item.identifier) != nil
+      item.identifier.gsub(/(\/bootstrap|\/foundation|\/$)/, '') + '.css'
+    end
+  end
+end
+
+route '/js/*' do
+  unless item.identifier.split('/').last.start_with?('_')
+    item.identifier.gsub(/(\/main|\/vendor|\/$)/, '') + '.js'
+  end
+end
+
+route '/img/bootstrap/*' do
+  if config[:frontend_framework] == 'bootstrap'
+    item.identifier.chop.gsub(/(\/bootstrap|\/$)/, '') + '.' + item[:extension]
+  end
+end
+
+route '/img/*/' do
+  item.identifier.chop + '.' + item[:extension]
+end
+
+route '*' do
+  if item.binary?
+    # Write item with identifier /foo/ to /foo.ext
+    item.identifier.chop + '.' + item[:extension]
+  else
+    # Write item with identifier /foo/ to /foo/index.html
+    item.identifier + 'index.html'
+  end
+end
+
+### Compilation ##############################################################
+
+compile '/static/*' do
+end
+
+compile '/css/*' do
+  unless item.identifier.split('/').last.start_with?('_')
+    regex = Regexp.new('/css/'+config[:frontend_framework]+'/')
+    if (regex =~ item.identifier) != nil
+      if config[:frontend_framework] == 'bootstrap'
+        filter :less
+        filter :yui_compressor, :type => :css
+      elsif config[:frontend_framework] == 'foundation'
+        filter :sass, Compass.sass_engine_options.merge(:syntax => :scss)
+      end
+    end
+  end
+end
+
+compile '/js/*' do
+  unless item.identifier.split('/').last.start_with?('_')
+    filter :erb
+    filter :concat
+    filter :erb
+    filter :uglify_js, :copyright => false
+  end
+end
+
+compile '/img/bootstrap/*' do
+end
+
+compile '/img/*/' do
+end
+
+compile '*' do
+  if item.binary?
+    # don’t filter binary items
+  else
+    filter :erb
+    layout 'default'
+  end
+end
+
+### Layouting ################################################################
+
+layout '*', :erb

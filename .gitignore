@@ -5,3 +5,12 @@ output/
 
 # Temporary file directory
 tmp/
+
+# Temporary sass directory
+.sass-cache/
+
+# Crash log
+crash.log
+
+# Gemfile.lock
+Gemfile.lock
