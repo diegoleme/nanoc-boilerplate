@@ -1,4 +1,4 @@
-nanoc-boilerplate
+Nanoc Boilerplate
 =================
 
 A jump-start for Nanoc sites development

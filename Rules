@@ -93,6 +93,7 @@ compile '*' do
   else
     filter :erb
     layout 'default'
+    filter :html_compressor
   end
 end
 
