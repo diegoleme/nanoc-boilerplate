@@ -10,6 +10,7 @@ Using
 - jQuery 1.9.1
 - Zepto 1.0
 - Modernizr 2.6.2 (Custom Build)
+- HTML5 Boilerplate 4.2.0
 
 CSS
 ---

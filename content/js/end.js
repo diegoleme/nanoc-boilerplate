@@ -29,3 +29,6 @@
 // =require bootstrap/_bootstrap-typeahead.js
 // =require bootstrap/_bootstrap-affix.js
 <% end %>
+
+// =require _plugins.js
+// =require _mais.js
