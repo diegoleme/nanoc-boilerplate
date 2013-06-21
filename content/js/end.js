@@ -30,5 +30,6 @@
 // =require bootstrap/_bootstrap-affix.js
 <% end %>
 
-// =require _plugins.js
-// =require _mais.js
+// =require main/_plugins.js
+// =require main/_main.js
+// =require main/_ga.js
